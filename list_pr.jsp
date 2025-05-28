@@ -1,12 +1,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="web.bean.Board01DTO" %>
-<jsp:useBean class="web.bean.Board01DAO" id="dao"/>
+<%@ page import="web.bean.Board01DTO_pr" %>
+<jsp:useBean class="web.bean.Board01DAO_pr" id="dao"/>
 
 <h2>글목록</h2>
 <%
-	//한 페이지에 보여질 글의 개수 처리
+//한 페이지에 보여질 글의 개수 처리
 	//list.jsp진입 시, request에 pageNum이 있다면 꺼내서 변수에 대입
 	String pageNum=request.getParameter("pageNum");
 	if(pageNum==null){ pageNum="1"; } //pageNum이 없다면 1대입
@@ -19,26 +19,26 @@
 
 <table border="1" width="800" style="border-collapse:collapse">
 	<tr>
-	<th width="50">글번호</th>
-	<th>글제목</th>
-	<th width="100">작성자</th>
-	<th width="200">작성일시</th>
+		<th width="50">글번호</th>
+		<th width="450">글제목</th>
+		<th width="100">작성자</th>
+		<th width="200">작성일시</th>
 	</tr>
-    <%
-	//테이블 전체를 보여주는-글목록 가져오는- dao.select 메서드
-	ArrayList<Board01DTO> list = dao.list(); //매개변수 추가
-	for( Board01DTO dto : list){ 
-	%>	
-	<tr>
-	<td align=center><%=dto.getNum() %></td>
-	<td><%--dto의num값을 get방식으로 같이 보냄 *게시판은 글번호(pk)&pageNum을 가지고 다녀야함--%>
-	<a href="content.jsp?num=<%=dto.getNum()%>" > 
-	<%--url에 값 같이 넘어가고 있는지 확인--%>
-	<%=dto.getTitle() %>
-	</a>
-	</td>
-	<td align=center><%=dto.getWriter() %></td>
-	<td><%=dto.getReg() %></td>
+<%
+    //테이블 전체를 보여주는-글목록 가져오는- dao.select 메서드
+    	ArrayList<Board01DTO_pr> list = dao.list(startRow, endRow); //매개변수 추가
+    	for( Board01DTO_pr dto : list){
+%>	
+	<tr align=center>
+		<td><%=dto.getNum() %></td>
+		<td><%--dto의num값을 get방식으로 같이 보냄 *게시판은 글번호(pk)&pageNum을 가지고 다녀야함--%>
+			<a href="content.jsp?num=<%=dto.getNum()%>" > 
+		<%--url에 값 같이 넘어가고 있는지 확인--%>
+		<%=dto.getTitle() %>
+		</a>
+		</td>
+		<td align=center><%=dto.getWriter() %></td>
+		<td><%=dto.getReg() %></td>
 	</tr>	
 <%	} %>
 </table>
@@ -48,7 +48,7 @@
 
 <%
 	//페이지 블록 처리
-	int count=9;//dao.boardCount();
+	int count=dao.boardCount();
 	if(count>0){ //게시글이 존재한다면,
 		int pageBlock=5;//한 번에 보여질 페이지 블럭의 범위
 		//페이지 블럭의 총 페이지 수 - 총 게시글을 pageBlock으로 나누고 남는 글이 있다면 페이지 +1
